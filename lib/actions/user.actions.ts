@@ -42,6 +42,17 @@ export async function updateUser({
   try {
     connectToDB();
 
+    // First check if the username is already taken by another user
+    const existingUser = await User.findOne({ 
+      username: username.toLowerCase(),
+      id: { $ne: userId } // Exclude current user
+    });
+
+    if (existingUser) {
+      throw new Error("Username is already taken. Please choose a different username.");
+    }
+
+    // If username is available, proceed with update
     await User.findOneAndUpdate(
       { id: userId },
       {
@@ -58,6 +69,15 @@ export async function updateUser({
       revalidatePath(path);
     }
   } catch (error: any) {
+    // Handle specific MongoDB duplicate key error
+    if (error.code === 11000) {
+      throw new Error("Username is already taken. Please choose a different username.");
+    }
+    // Handle our custom error from the username check
+    if (error.message.includes("Username is already taken")) {
+      throw error;
+    }
+    // Handle other errors
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
 }
