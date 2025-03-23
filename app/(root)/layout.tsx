@@ -28,14 +28,16 @@ export default function RootLayout({
         baseTheme: dark,
       }}
     >
-      <html lang='en'>
-        <body className={inter.className}>
+      <html lang='en' className="scroll-smooth">
+        <body className={`${inter.className} bg-dark-1 min-h-screen transition-colors duration-300`}>
           <Topbar />
 
-          <main className='flex flex-row'>
+          <main className='flex flex-row transition-all duration-300'>
             <LeftSidebar />
-            <section className='main-container'>
-              <div className='w-full max-w-4xl'>{children}</div>
+            <section className='main-container flex-1 transition-all duration-300'>
+              <div className='w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300'>
+                {children}
+              </div>
             </section>
             {/* @ts-ignore */}
             <RightSidebar />
